@@ -1,0 +1,42 @@
+extends layout
+
+block head
+  script(type="text/javascript")
+    function MessageController($scope) {
+      var chat = io.connect('//:#{ port }/chat');
+      $scope.messages = [];
+      chat.on("downstream:message", function (data) {
+        $scope.$apply(function() {
+          $scope.messages.push(data);
+        });
+      });
+      $scope.send = function() {
+        message = $scope.message.trim();
+        if (message.length > 0) {
+          chat.emit("upstream:message", message);
+          $scope.messages.push(message);
+        }
+        $scope.message = "";
+      };
+    }
+
+block content
+  div(ng-controller="MessageController")
+    ul
+      li(ng-repeat="message in messages")
+        span {{ message }}
+  
+    form(ng-submit="send()")
+      textarea#message(type="text", ng-model="message", size=30)
+      input(type="submit", value="send")
+
+    script(type='text/javascript')
+      $('div[ng-controller="MessageController"] form[ng-submit="send()"]').
+        children('textarea[ng-model="message"]').
+        keypress(function(event)
+        {
+          if (event.which == 13) {
+            $(event.target).siblings('input[type="submit"]').click();
+            event.preventDefault();
+          }
+        });

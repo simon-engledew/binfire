@@ -1,0 +1,14 @@
+doctype 5
+html(ng-app)
+  head
+    title= title
+    link(rel='stylesheet', src='//yui.yahooapis.com/3.8.0/build/cssreset/cssreset-min.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(type='text/javascript', src='/socket.io/socket.io.js')
+    script(type='text/javascript', src='//ajax.googleapis.com/ajax/libs/angularjs/1.0.3/angular.min.js')
+    script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.0/jquery.js')
+    block head
+        
+    
+  body
+    block content
