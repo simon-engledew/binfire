@@ -40,7 +40,8 @@ var io = require('socket.io').listen(server);
 var chat = io.of('/chat');
 
 chat.on('connection', function (socket) {
-  socket.broadcast.emit('downstream:message', socket.id.toString() + ' joined the room');
+  // socket.broadcast.emit('downstream:message', {'channel': '1', 'data': socket.id.toString() + ' joined the room'});
+  socket.emit('downstream:connected', {'id': socket.id});
   socket.on('upstream:message', function (data) {
      socket.broadcast.emit('downstream:message', data);
   });

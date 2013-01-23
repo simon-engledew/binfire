@@ -2,41 +2,72 @@ extends layout
 
 block head
   script(type="text/javascript")
-    function MessageController($scope) {
+    angular.module('trampfire', []).controller('MessageController', function ($scope) {
       var chat = io.connect('//:#{ port }/chat');
-      $scope.messages = [];
-      chat.on("downstream:message", function (data) {
+
+      $scope.messages = {'1': [], '2': []};
+      $scope.channels = {'1': 'Cheese', 2: 'Petrol'};
+      $scope.channel = '1';
+      $scope.user = {};
+
+      chat.on("downstream:connected", function (user) {
         $scope.$apply(function() {
-          $scope.messages.push(data);
+          $scope.user = user;
         });
       });
+
+      chat.on("downstream:message", function (message) {
+        $scope.$apply(function() {
+          $scope.messages[message.channel].push(message.data);
+        });
+      });
+
+      $scope.isChannel = function(channel) {
+        return $scope.channel === channel;
+      }
+
+      $scope.setChannel = function(channel) {
+        if ($scope.channel != channel) {
+          chat.emit('upstream:message', {'channel': $scope.channel, 'data': $scope.user.id + ' left the room'});
+          $scope.channel = channel;
+          chat.emit('upstream:message', {'channel': $scope.channel, 'data': $scope.user.id + ' joined the room'});
+        }
+      }
+
       $scope.send = function() {
         message = $scope.message.trim();
         if (message.length > 0) {
-          chat.emit("upstream:message", message);
-          $scope.messages.push(message);
+          chat.emit("upstream:message", {'channel': $scope.channel, 'data': message});
+          $scope.messages[$scope.channel].push(message);
         }
         $scope.message = "";
       };
-    }
+    });
 
 block content
   div(ng-controller="MessageController")
-    ul
-      li(ng-repeat="message in messages")
+    ul.channels
+      li(ng-repeat="(id, channel) in channels", ng-class="{ active:isChannel(id) }")
+        a(ng-click="setChannel(id)") {{ channel }}
+
+    ul.messages
+      li(ng-repeat="message in messages[channel]")
         span {{ message }}
   
     form(ng-submit="send()")
       textarea#message(type="text", ng-model="message", size=30)
       input(type="submit", value="send")
 
-    script(type='text/javascript')
-      $('div[ng-controller="MessageController"] form[ng-submit="send()"]').
-        children('textarea[ng-model="message"]').
-        keypress(function(event)
-        {
-          if (event.which == 13) {
-            $(event.target).siblings('input[type="submit"]').click();
-            event.preventDefault();
-          }
-        });
+      script(type='text/javascript')
+        $('script').
+          last().
+          parent('form').
+          children('textarea').
+          keypress(function(event)
+          {
+            if (event.which == 13)
+            {
+              $(event.target).siblings('input[type="submit"]').click();
+              event.preventDefault();
+            }
+          });

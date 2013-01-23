@@ -1,0 +1,64 @@
+body, html {
+    padding: 0;
+    margin: 0;
+}
+div[ng-controller="MessageController"] {
+    form {
+        margin: 0;
+        background: #ddd;
+        padding: 10px 80px 10px 10px;
+        box-sizing: border-box;
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+        border-top: solid 1px #666;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.25);
+
+        textarea {
+            margin: 0;
+            width: 100%;
+            box-sizing: border-box;
+            height: 50px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            resize: none;
+        }
+
+        input[type="submit"] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 60px;
+            margin: 10px;
+        }
+    }
+    ul.channels {
+        list-style-type: none;
+        margin: 0;
+        padding: 0 0 0 10px;
+        li {
+            display: inline-block;
+            border: solid 1px #ccc;
+            padding: 10px;
+            margin: 10px 10px 10px 0;
+
+            &.active {
+                background: red;
+            }
+        }
+    }
+
+    ul.messages {
+        list-style-type: none;
+        padding: 10px;
+        margin: 0 0 76px 0;
+
+        li {
+            line-height: 150%;
+            border-bottom: solid 1px #eee;
+            padding: 0.5em 0.5em;
+            font-family: 'Lucida Grande';
+            font-size: 9pt;
+        }
+    }
+}
