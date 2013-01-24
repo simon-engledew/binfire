@@ -5,20 +5,29 @@ block head
     angular.module('trampfire', []).controller('MessageController', function ($scope) {
       var chat = io.connect('//:#{ port }/chat');
 
-      $scope.messages = {'1': [], '2': []};
-      $scope.channels = {'1': 'Cheese', 2: 'Petrol'};
-      $scope.channel = '1';
+      $scope.messages = {'Cheese': [], 'Petrol': []};
+      $scope.channel = 'Cheese';
       $scope.user = {};
 
-      chat.on("downstream:connected", function (user) {
+      chat.on("downstream:connected", function(user) {
         $scope.$apply(function() {
           $scope.user = user;
         });
       });
 
-      chat.on("downstream:message", function (message) {
-        $scope.$apply(function() {
-          $scope.messages[message.channel].push(message.data);
+      function push(message) {
+        console.log(message);
+        if (!(message.channel in $scope.messages))
+        {
+          $scope.messages[message.channel] = [];
+        }
+        $scope.messages[message.channel].push(message.data);
+      }
+
+      chat.on("downstream:message", function(message) {
+        $scope.$apply(function()
+        {
+          push(message);
         });
       });
 
@@ -38,36 +47,39 @@ block head
         message = $scope.message.trim();
         if (message.length > 0) {
           chat.emit("upstream:message", {'channel': $scope.channel, 'data': message});
-          $scope.messages[$scope.channel].push(message);
+          push({'channel': $scope.channel, 'data': message});
         }
-        $scope.message = "";
+        $scope.message = '';
       };
     });
 
 block content
   div(ng-controller="MessageController")
-    ul.channels
-      li(ng-repeat="(id, channel) in channels", ng-class="{ active:isChannel(id) }")
-        a(ng-click="setChannel(id)") {{ channel }}
+    nav
+      input(type='text', ng-model='channel')
 
-    ul.messages
-      li(ng-repeat="message in messages[channel]")
-        span {{ message }}
-  
-    form(ng-submit="send()")
-      textarea#message(type="text", ng-model="message", size=30)
-      input(type="submit", value="send")
+      ul.channels
+        li(ng-repeat="(channel, _) in messages", ng-class="{ active:isChannel(channel) }")
+          a(ng-click="setChannel(channel)") {{ channel }}
+    section
+      ul.messages
+        li(ng-repeat="message in messages[channel]")
+          span {{ message }}
+    
+      form(ng-submit="send()")
+        textarea#message(type="text", ng-model="message", size=30)
+        input(type="submit", value="send")
 
-      script(type='text/javascript')
-        $('script').
-          last().
-          parent('form').
-          children('textarea').
-          keypress(function(event)
-          {
-            if (event.which == 13)
+        script(type='text/javascript')
+          $('script').
+            last().
+            parent('form').
+            children('textarea').
+            keypress(function(event)
             {
-              $(event.target).siblings('input[type="submit"]').click();
-              event.preventDefault();
-            }
-          });
+              if (event.which == 13)
+              {
+                $(event.target).siblings('input[type="submit"]').click();
+                event.preventDefault();
+              }
+            });

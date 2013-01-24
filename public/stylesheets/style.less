@@ -3,6 +3,30 @@ body, html {
     margin: 0;
 }
 div[ng-controller="MessageController"] {
+    nav {
+        float: right;
+        width: 30%;
+        box-sizing: border-box;
+
+        ul.channels {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            li {
+                border: solid 1px #ccc;
+                padding: 0.5em;
+                margin: 10px 10px 10px 0;
+
+                &.active {
+                    background: red;
+                }
+            }
+        }
+    }
+    section {
+        width: 70%;
+        box-sizing: border-box;
+    }
     form {
         margin: 0;
         background: #ddd;
@@ -30,21 +54,6 @@ div[ng-controller="MessageController"] {
             right: 0;
             width: 60px;
             margin: 10px;
-        }
-    }
-    ul.channels {
-        list-style-type: none;
-        margin: 0;
-        padding: 0 0 0 10px;
-        li {
-            display: inline-block;
-            border: solid 1px #ccc;
-            padding: 10px;
-            margin: 10px 10px 10px 0;
-
-            &.active {
-                background: red;
-            }
         }
     }
 
