@@ -16,12 +16,11 @@ block head
       });
 
       function push(message) {
-        console.log(message);
         if (!(message.channel in $scope.messages))
         {
           $scope.messages[message.channel] = [];
         }
-        $scope.messages[message.channel].push(message.data);
+        $scope.messages[message.channel].push(message);
       }
 
       chat.on("downstream:message", function(message) {
@@ -31,8 +30,18 @@ block head
         });
       });
 
+      $scope.isSelf = function(message) {
+        return message.id == $scope.user.id;
+      }
+
       $scope.isChannel = function(channel) {
         return $scope.channel === channel;
+      }
+
+      $scope.createChannel = function() {
+        if (!($scope.channel in $scope.messages)) {
+          $scope.messages[$scope.channel] = [];
+        }
       }
 
       $scope.setChannel = function(channel) {
@@ -44,30 +53,39 @@ block head
       }
 
       $scope.send = function() {
-        message = $scope.message.trim();
-        if (message.length > 0) {
-          chat.emit("upstream:message", {'channel': $scope.channel, 'data': message});
-          push({'channel': $scope.channel, 'data': message});
+        data = $scope.data.trim();
+        if (data.length > 0) {
+          chat.emit("upstream:message", {'channel': $scope.channel, 'data': data});
+          push({'channel': $scope.channel, 'data': data, 'id': $scope.user.id});
         }
-        $scope.message = '';
+        $scope.data = '';
       };
+    }).directive('scroll', function() {
+      return {
+        link: function(scope, element, attrs, ctrl) {
+          $('html, body').scrollTop($(element).offset().top);
+        }
+      }
     });
 
 block content
   div(ng-controller="MessageController")
     nav
-      input(type='text', ng-model='channel')
+      form(ng-submit="createChannel()")
+        input(type='text', ng-model='channel')
+        input(type="submit", value="create")
 
       ul.channels
         li(ng-repeat="(channel, _) in messages", ng-class="{ active:isChannel(channel) }")
           a(ng-click="setChannel(channel)") {{ channel }}
     section
       ul.messages
-        li(ng-repeat="message in messages[channel]")
-          span {{ message }}
-    
+        li(ng-repeat="message in messages[channel]", ng-class="{ self:isSelf(message) }", scroll)
+          span.id {{ message.id }}
+          span.data {{ message.data }}
+
       form(ng-submit="send()")
-        textarea#message(type="text", ng-model="message", size=30)
+        textarea#message(type="text", ng-model="data", size=30)
         input(type="submit", value="send")
 
         script(type='text/javascript')
@@ -77,7 +95,7 @@ block content
             children('textarea').
             keypress(function(event)
             {
-              if (event.which == 13)
+              if (event.which == 13 && !event.ctrlKey)
               {
                 $(event.target).siblings('input[type="submit"]').click();
                 event.preventDefault();

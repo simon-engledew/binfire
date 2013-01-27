@@ -43,6 +43,7 @@ chat.on('connection', function (socket) {
   // socket.broadcast.emit('downstream:message', {'channel': '1', 'data': socket.id.toString() + ' joined the room'});
   socket.emit('downstream:connected', {'id': socket.id});
   socket.on('upstream:message', function (data) {
+     data['id'] = socket.id;
      socket.broadcast.emit('downstream:message', data);
   });
 });
