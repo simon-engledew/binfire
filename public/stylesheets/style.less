@@ -1,33 +1,51 @@
 body, html {
     padding: 0;
     margin: 0;
+    font: 9pt 'Lucida Grande';
 }
 div[ng-controller="MessageController"] {
+    @form-textarea-height: 50px;
+    @form-submit-width: 60px;
+
     nav {
         position: fixed;
-        top: 10;
-        // float: right;
-        left: 70%;
+        top: 0;
+        right: 0;
         width: 30%;
+        padding: 10px 10px 10px 11px;
         box-sizing: border-box;
+        height: 100%;
+        background: #eee;
+        border-left: solid 1px #eee;
+        box-shadow: inset 1px 0 0 #bbb;
+        border-bottom: solid (@form-textarea-height + 20px + 1px) transparent;
+        overflow-y: auto;
 
         ul.channels {
             list-style-type: none;
             margin: 0;
             padding: 0;
             li {
-                font: 9pt 'Lucida Grande';
-                padding: 0.5em;
                 margin: 10px 10px 10px 0;
+                background: #fff;
+                box-shadow: 1px 1px 0 darken(#eee, 5%);
 
                 a {
                     color: #333;
+                    padding: 0.5em;
+                    display: inline-block;
+                    width: 100%;
                 }
-                border-left: solid 3px #eee;
+                border-left: solid 3px #fff;
                 &.active {
                     border-left: solid 3px red;
                 }
             }
+        }
+
+        label[for="channel"] {
+            font-size: 8pt;
+            margin-right: 1ex;
         }
 
         input[type="submit"] {
@@ -35,13 +53,10 @@ div[ng-controller="MessageController"] {
         }
     }
 
-    @form-textarea-height: 50px;
-    @form-submit-width: 60px;
-
     section {
         width: 70%;
         box-sizing: border-box;
-    
+
         form {
             margin: 0;
             background: #ddd;
@@ -85,33 +100,35 @@ div[ng-controller="MessageController"] {
 
             li {
                 line-height: 150%;
-                border-bottom: solid 1px #eee;
-                padding: 0.5em 0.5em;
-                font: 9pt 'Lucida Grande';
-                
+                border-bottom: solid 1px darken(#efefef, 5%);
+
                 -webkit-animation-name: fade-in;
                 -webkit-animation-duration: 0.5s;
 
                 &.self {
-                    background-color: #fbfbf2;
+                    background-color: #ffc;
                 }
 
                 @data-width: 110px;
-                span.id {
-                    width: @data-width;
-                    margin-right: 10px;
-                    float: left;
-                    text-overflow: ellipsis;
-                    overflow: hidden;
-                    white-space: nowrap;
-                    display: block;
-                }
-                span.data {
-                    white-space: pre-wrap;
-                    margin-left: (@data-width + 10px);
-                    display: block;
-                    border-left: solid 1px #eee;
-                    padding-left: 10px;
+                span {
+                    padding: 0.5em 0.5em;
+                    &.id {
+                        background: #efefef;
+                        width: @data-width;
+                        margin-right: 10px;
+                        float: left;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        display: block;
+                    }
+                    &.data {
+                        white-space: pre-wrap;
+                        margin-left: (@data-width + 10px);
+                        display: block;
+                        border-left: solid 1px #eee;
+                        padding-left: 10px;
+                    }
                 }
             }
         }
