@@ -2,31 +2,41 @@ body, html {
     padding: 0;
     margin: 0;
     font: 9pt 'Lucida Grande';
+    height: 100%;
 }
 div[ng-controller="MessageController"] {
     @form-textarea-height: 50px;
     @form-submit-width: 60px;
 
+    display: table;
+    border-collapse:collapse;
+
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    border-right: solid 300px red;
+
     nav {
-        position: fixed;
+        position: absolute;
         top: 0;
         right: 0;
-        width: 30%;
-        padding: 10px 10px 10px 11px;
+        width: 300px;
+        z-index: 3;
+        padding: 10px 10px 10px 10px;
         box-sizing: border-box;
         height: 100%;
         background: #eee;
-        border-left: solid 1px #eee;
-        box-shadow: inset 1px 0 0 #bbb;
-        border-bottom: solid (@form-textarea-height + 20px + 1px) transparent;
+        box-shadow: inset 1px 0 0 #bbb, inset 2px 0 0 #fff;
+
         overflow-y: auto;
+        overflow-x: hidden;
 
         ul.channels {
             list-style-type: none;
             margin: 0;
             padding: 0;
             li {
-                margin: 10px 10px 10px 0;
+                margin: 10px 0 10px 0;
                 background: #fff;
                 box-shadow: 1px 1px 0 darken(#eee, 5%);
 
@@ -53,21 +63,38 @@ div[ng-controller="MessageController"] {
         }
     }
 
-    section {
-        width: 70%;
-        box-sizing: border-box;
+    header {
+        display: table-row;
+        background: #036;
+        background: -webkit-linear-gradient(bottom, darken(#003366, 5%) 0%, #003366 8%);
+        ul {
+            padding: 0;
+            margin: 0;
+            list-style-type: none;
+            li {
+                background: #1a4f85;
+                margin: 5px 0 0 5px;
+                display: inline-block;
+                padding: 0.5em 1em;
+                color: #dde;
+            }
+        }
+    }
+
+    section.message {
+        display: table-row;
+        height: @form-textarea-height + 20px;
 
         form {
+            display: table-cell;
+            position: relative;
+
             margin: 0;
             background: #ddd;
             padding: 10px (@form-submit-width + 20px) 10px 10px;
-            box-sizing: border-box;
-            width: 100%;
-            position: fixed;
-            bottom: 0;
-            border-top: solid 1px #666;
             line-height: 0;
-            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.25);
+
+            box-shadow: inset 0 1px 0 #666, inset 0 2px 1px rgba(0, 0, 0, 0.25);
 
             textarea {
                 margin: 0;
@@ -87,33 +114,45 @@ div[ng-controller="MessageController"] {
                 margin: 10px;
             }
         }
+    }
+
+    section.messages {
+        height: 100%;
+
+        box-sizing: border-box;
+        display: table-row;
 
         @-webkit-keyframes fade-in {
             from { opacity: 0; }
             to { opacity: 1; }
         }
 
-        ul.messages {
+        ul {
+            height: 100%;
+            overflow: auto;
             list-style-type: none;
             padding: 10px;
-            margin: 0 0 (@form-textarea-height + 20px + 1px) 0;
+            margin: 0 0 (@form-textarea-height + 20px) 0;
 
             li {
                 line-height: 150%;
-                border-bottom: solid 1px darken(#efefef, 5%);
+                box-shadow: inset 0 -1px 0 #efefef;
 
                 -webkit-animation-name: fade-in;
                 -webkit-animation-duration: 0.5s;
 
+                background: -webkit-linear-gradient(left, #efefef 0%, #efefef 120px, #fff 122px, #fff 100%);
+
                 &.self {
-                    background-color: #ffc;
+                    // background-color: #ffc;
+                    background: -webkit-linear-gradient(left, #efefef 0%, #efefef 120px, #ffc 121px, #ffc 100%);
                 }
 
                 @data-width: 110px;
                 span {
                     padding: 0.5em 0.5em;
                     &.id {
-                        background: #efefef;
+                        // background: #efefef;
                         width: @data-width;
                         margin-right: 10px;
                         float: left;
@@ -121,12 +160,14 @@ div[ng-controller="MessageController"] {
                         overflow: hidden;
                         white-space: nowrap;
                         display: block;
+                        height: 100%;
+                        // border-right: solid 1px #dcdcdc;
                     }
                     &.data {
                         white-space: pre-wrap;
                         margin-left: (@data-width + 10px);
                         display: block;
-                        border-left: solid 1px #eee;
+                        border-left: solid 1px #dcdcdc;
                         padding-left: 10px;
                     }
                 }

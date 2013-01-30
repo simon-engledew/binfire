@@ -60,16 +60,36 @@ block head
         }
         $scope.data = '';
       };
-    }).directive('scroll', function() {
+    }).directive('scrollTo', function() {
       return {
         link: function(scope, element, attrs, ctrl) {
-          $('html, body').scrollTop($(element).offset().top);
+          element = $(element);
+          element.parent().scrollTop($(element).offset().top);
+        }
+      }
+    }).directive('bindEnter', function() {
+      return {
+        link: function(scope, element, attrs, ctrl) {
+          $(element).children('textarea').
+            keypress(function(event)
+            {
+              if (event.which == 13 && !event.ctrlKey)
+              {
+                $(event.target).siblings('input[type="submit"]').click();
+                event.preventDefault();
+              }
+            });
         }
       }
     });
 
 block content
   div(ng-controller="MessageController")
+    header
+      ul
+        li hello
+        li there
+
     nav
       form(ng-submit="createChannel()")
         label(for='channel') Channel:
@@ -79,26 +99,14 @@ block content
       ul.channels
         li(ng-repeat="(channel, _) in messages", ng-class="{ active:isChannel(channel) }")
           a(ng-click="setChannel(channel)") {{ channel }}
-    section
-      ul.messages
-        li(ng-repeat="message in messages[channel]", ng-class="{ self:isSelf(message) }", scroll)
+
+    section.messages
+      ul
+        li(ng-repeat="message in messages[channel]", ng-class="{ self:isSelf(message) }", scroll-to)
           span.id {{ message.id }}
           span.data {{ message.data }}
 
-      form(ng-submit="send()")
+    section.message
+      form(ng-submit="send()", bind-enter)
         textarea#message(type="text", ng-model="data", size=30)
         input(type="submit", value="send")
-
-        script(type='text/javascript')
-          $('script').
-            last().
-            parent('form').
-            children('textarea').
-            keypress(function(event)
-            {
-              if (event.which == 13 && !event.ctrlKey)
-              {
-                $(event.target).siblings('input[type="submit"]').click();
-                event.preventDefault();
-              }
-            });
