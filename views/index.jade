@@ -84,29 +84,36 @@ block head
     });
 
 block content
-  div(ng-controller="MessageController")
-    header
-      ul
-        li hello
-        li there
+  table(ng-controller="MessageController")
+    tr
+      td.header
+        ul
+          li hello
+          li there
 
-    nav
-      form(ng-submit="createChannel()")
-        label(for='channel') Channel:
-        input(type='text', ng-model='channel', name='channel')
-        input(type="submit", value="create")
+      td.channels(rowspan=3)
+        div.scroll-pane
+          div
+            form(ng-submit="createChannel()")
+              label(for='channel') Channel:
+              input(type='text', ng-model='channel', name='channel')
+              input(type="submit", value="create")
 
-      ul.channels
-        li(ng-repeat="(channel, _) in messages", ng-class="{ active:isChannel(channel) }")
-          a(ng-click="setChannel(channel)") {{ channel }}
+            ul
+              li(ng-repeat="(channel, _) in messages", ng-class="{ active:isChannel(channel) }")
+                a(ng-click="setChannel(channel)") {{ channel }}
 
-    section.messages
-      ul
-        li(ng-repeat="message in messages[channel]", ng-class="{ self:isSelf(message) }", scroll-to)
-          span.id {{ message.id }}
-          span.data {{ message.data }}
+    tr
+      td.messages
+        div.scroll-pane
+          div
+            ul
+              li(ng-repeat="message in messages[channel]", ng-class="{ self:isSelf(message) }", scroll-to)
+                span.id {{ message.id }}
+                span.data {{ message.data }}
 
-    section.message
-      form(ng-submit="send()", bind-enter)
-        textarea#message(type="text", ng-model="data", size=30)
-        input(type="submit", value="send")
+    tr
+      td.message
+        form(ng-submit="send()", bind-enter)
+          textarea#message(type="text", ng-model="data", size=30)
+          input(type="submit", value="send")

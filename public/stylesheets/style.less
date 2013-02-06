@@ -4,69 +4,44 @@ body, html {
     font: 9pt 'Lucida Grande';
     height: 100%;
 }
-div[ng-controller="MessageController"] {
+
+div.scroll-pane {
+    height: 100%;
+    width: 100%;
+
+    position: relative;
+
+    > div {
+        position: absolute;
+
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+
+        height: 100%;
+        width: 100%;
+        
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+}
+
+table[ng-controller="MessageController"] {
     @form-textarea-height: 50px;
     @form-submit-width: 60px;
-
-    display: table;
-    border-collapse:collapse;
+    border-collapse: collapse;
 
     height: 100%;
     width: 100%;
-    box-sizing: border-box;
-    border-right: solid 300px red;
 
-    nav {
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 300px;
-        z-index: 3;
-        padding: 10px 10px 10px 10px;
-        box-sizing: border-box;
-        height: 100%;
-        background: #eee;
-        box-shadow: inset 1px 0 0 #bbb, inset 2px 0 0 #fff;
-
-        overflow-y: auto;
-        overflow-x: hidden;
-
-        ul.channels {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            li {
-                margin: 10px 0 10px 0;
-                background: #fff;
-                box-shadow: 1px 1px 0 darken(#eee, 5%);
-
-                a {
-                    color: #333;
-                    padding: 0.5em;
-                    display: inline-block;
-                    width: 100%;
-                }
-                border-left: solid 3px #fff;
-                &.active {
-                    border-left: solid 3px red;
-                }
-            }
-        }
-
-        label[for="channel"] {
-            font-size: 8pt;
-            margin-right: 1ex;
-        }
-
-        input[type="submit"] {
-            visibility: hidden;
-        }
+    td {
+        padding: 0;
+        vertical-align: top;
     }
 
-    header {
-        display: table-row;
+    td.header {
         background: #036;
         background: -webkit-linear-gradient(bottom, darken(#003366, 5%) 0%, #003366 8%);
+
         ul {
             padding: 0;
             margin: 0;
@@ -81,58 +56,23 @@ div[ng-controller="MessageController"] {
         }
     }
 
-    section.message {
-        display: table-row;
-        height: @form-textarea-height + 20px;
-
-        form {
-            display: table-cell;
-            position: relative;
-
-            margin: 0;
-            background: #ddd;
-            padding: 10px (@form-submit-width + 20px) 10px 10px;
-            line-height: 0;
-
-            box-shadow: inset 0 1px 0 #666, inset 0 2px 1px rgba(0, 0, 0, 0.25);
-
-            textarea {
-                margin: 0;
-                width: 100%;
-                box-sizing: border-box;
-                height: @form-textarea-height;
-                white-space: pre-wrap;
-                word-wrap: break-word;
-                resize: none;
-            }
-
-            input[type="submit"] {
-                position: absolute;
-                top: 0;
-                right: 0;
-                width: @form-submit-width;
-                margin: 10px;
-            }
-        }
-    }
-
-    section.messages {
+    td.messages {
+        width: 70%;
         height: 100%;
 
-        box-sizing: border-box;
-        display: table-row;
-
-        @-webkit-keyframes fade-in {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
         ul {
+            display: block;
             height: 100%;
+            width: 100%;
             overflow: auto;
             list-style-type: none;
+
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+
             padding: 10px;
-            margin: 0 0 (@form-textarea-height + 20px) 0;
+            margin: 0;
+
 
             li {
                 line-height: 150%;
@@ -172,6 +112,84 @@ div[ng-controller="MessageController"] {
                     }
                 }
             }
+
+        }
+    }
+
+    td.channels {
+        background: #eee;
+        box-shadow: inset 1px 0 0 #bbb, inset 2px 0 0 #fff;
+        height: 100%;
+
+        ul {
+            list-style-type: none;
+            
+            margin: 0;
+            padding: 10px;
+
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+
+            li {
+                margin: 10px 0 10px 0;
+                background: #fff;
+                box-shadow: 1px 1px 0 darken(#eee, 5%);
+
+                a {
+                    color: #333;
+                    padding: 0.5em;
+                    display: inline-block;
+                    width: 100%;
+                }
+                border-left: solid 3px #fff;
+                &.active {
+                    border-left: solid 3px red;
+                }
+            }
+        }
+        form {
+            padding: 10px;
+            padding-bottom: 0;
+
+            label[for="channel"] {
+                font-size: 8pt;
+                margin-right: 1ex;
+            }
+
+            input[type="submit"] {
+                margin: 0;
+                visibility: hidden;
+            }
+        }
+    }
+
+    td.message {
+        > form {
+            position: relative;
+            padding: 10px;
+            padding-right: @form-submit-width + 20px;
+        }
+        
+        background: #eee;
+        box-shadow: inset 0 1px 0 #666, inset 0 2px 1px rgba(0, 0, 0, 0.25);
+
+        textarea {
+            margin: 0;
+            width: 100%;
+            box-sizing: border-box;
+            height: @form-textarea-height;
+
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            resize: none;
+        }
+
+        input[type="submit"] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: @form-submit-width;
+            margin: 10px;
         }
     }
 }
